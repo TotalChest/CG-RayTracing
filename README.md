@@ -1,2 +1,2 @@
-# CcomputerGraphics
+# ComputerGraphics
 CMC course "Сomputer graphics"
