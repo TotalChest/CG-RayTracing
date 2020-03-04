@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/totalchest/Документы/ComputerGraphics/Bitmap.cpp
+vector
+-
+fstream
+-
+cstring
+-
+
+/home/totalchest/Документы/ComputerGraphics/Bitmap.h
+
+/home/totalchest/Документы/ComputerGraphics/main.cpp
+iostream
+-
+cstdint
+-
+string
+-
+vector
+-
+unordered_map
+-
+Bitmap.h
+/home/totalchest/Документы/ComputerGraphics/Bitmap.h
+cstdlib
+-
+

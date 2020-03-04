@@ -1,0 +1,3 @@
+/home/totalchest/Документы/ComputerGraphics/CMakeFiles/rebuild_cache.dir
+/home/totalchest/Документы/ComputerGraphics/CMakeFiles/rt.dir
+/home/totalchest/Документы/ComputerGraphics/CMakeFiles/edit_cache.dir
