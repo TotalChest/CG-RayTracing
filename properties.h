@@ -7,10 +7,12 @@
 #include <cstdint>
 #include <cassert>
 #include <iostream>
+#include <omp.h>
 
 
-const int HEIGHT = 1080;
-const int WIDTH  = 1080;
+
+const int HEIGHT = 1048;
+const int WIDTH  = 1048;
 const float PI = 3.141592;
 const float EPSILON = 0.00001;
 const int RECURSION_DEPTH = 3;

@@ -10,11 +10,14 @@
 #include "properties.h"
 
 
-void build_image(std::vector<uint32_t> &, int);
+bool build_image(std::vector<uint32_t> &, int);
+
+int threads = 1;
 
 
 int main(int argc, const char** argv)
 {
+
     std::unordered_map<std::string, std::string> cmdLineParams;
 
     for(int i=0; i<argc; i++)
@@ -41,15 +44,16 @@ int main(int argc, const char** argv)
     if(cmdLineParams.find("-scene") != cmdLineParams.end())
         sceneId = atoi(cmdLineParams["-scene"].c_str());
 
-
+    if(cmdLineParams.find("-threads") != cmdLineParams.end())
+        threads = atoi(cmdLineParams["-threads"].c_str());
 
     std::vector<uint32_t> image(HEIGHT * WIDTH, 0); 
 
-    build_image(image, sceneId);
-
-
-    SaveBMP(outFilePath.c_str(), image.data(), HEIGHT, WIDTH);
+    
+    if(build_image(image, sceneId))
+        SaveBMP(outFilePath.c_str(), image.data(), HEIGHT, WIDTH);
 
     std::cout << "Done." << std::endl;
+
     return 0;
 }

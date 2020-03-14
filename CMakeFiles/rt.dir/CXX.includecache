@@ -49,6 +49,10 @@ cassert
 -
 iostream
 -
+omp.h
+-
+ctime
+-
 
 /home/totalchest/Документы/ComputerGraphics/render.cpp
 properties.h
