@@ -7,11 +7,11 @@
 
 #include "Bitmap.h"
 
-#include <cstdlib>
+#include "properties.h"
 
-const uint32_t RED   = 0x000000FF;
-const uint32_t GREEN = 0x0000FF00;
-const uint32_t BLUE  = 0x00FF0000;
+
+void build_image(std::vector<uint32_t> &, int);
+
 
 int main(int argc, const char** argv)
 {
@@ -23,7 +23,7 @@ int main(int argc, const char** argv)
 
         if(key.size() > 0 && key[0]=='-')
         {
-            if(i != argc-1) // not last argument
+            if(i != argc-1)
             {
             cmdLineParams[key] = argv[i+1];
             i++;
@@ -41,20 +41,15 @@ int main(int argc, const char** argv)
     if(cmdLineParams.find("-scene") != cmdLineParams.end())
         sceneId = atoi(cmdLineParams["-scene"].c_str());
 
-    uint32_t color = 0;
-    if(sceneId == 1)
-        color = RED;
-    else if(sceneId == 2)
-        color = RED | GREEN;
-    else if(sceneId == 3)
-        color = BLUE;
-  
-    std::vector<uint32_t> image(512*512); 
-    for(auto& pixel : image)
-        pixel = color + (std::rand() % 0x00FFFFFF);
 
-    SaveBMP(outFilePath.c_str(), image.data(), 512, 512);
 
-    std::cout << "end." << std::endl;
+    std::vector<uint32_t> image(HEIGHT * WIDTH, 0); 
+
+    build_image(image, sceneId);
+
+
+    SaveBMP(outFilePath.c_str(), image.data(), HEIGHT, WIDTH);
+
+    std::cout << "Done." << std::endl;
     return 0;
 }

@@ -177,6 +177,33 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/rt.dir/build.make CMakeFiles/rt.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+render.o: render.cpp.o
+
+.PHONY : render.o
+
+# target to build an object file
+render.cpp.o:
+	$(MAKE) -f CMakeFiles/rt.dir/build.make CMakeFiles/rt.dir/render.cpp.o
+.PHONY : render.cpp.o
+
+render.i: render.cpp.i
+
+.PHONY : render.i
+
+# target to preprocess a source file
+render.cpp.i:
+	$(MAKE) -f CMakeFiles/rt.dir/build.make CMakeFiles/rt.dir/render.cpp.i
+.PHONY : render.cpp.i
+
+render.s: render.cpp.s
+
+.PHONY : render.s
+
+# target to generate assembly for a file
+render.cpp.s:
+	$(MAKE) -f CMakeFiles/rt.dir/build.make CMakeFiles/rt.dir/render.cpp.s
+.PHONY : render.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -192,6 +219,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... render.o"
+	@echo "... render.i"
+	@echo "... render.s"
 .PHONY : help
 
 

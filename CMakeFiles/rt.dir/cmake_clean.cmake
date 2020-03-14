@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/rt.dir/main.cpp.o"
   "CMakeFiles/rt.dir/Bitmap.cpp.o"
+  "CMakeFiles/rt.dir/render.cpp.o"
   "rt.pdb"
   "rt"
 )

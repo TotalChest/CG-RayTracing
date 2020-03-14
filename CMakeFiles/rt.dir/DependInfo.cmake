@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/totalchest/Документы/ComputerGraphics/Bitmap.cpp" "/home/totalchest/Документы/ComputerGraphics/CMakeFiles/rt.dir/Bitmap.cpp.o"
   "/home/totalchest/Документы/ComputerGraphics/main.cpp" "/home/totalchest/Документы/ComputerGraphics/CMakeFiles/rt.dir/main.cpp.o"
+  "/home/totalchest/Документы/ComputerGraphics/render.cpp" "/home/totalchest/Документы/ComputerGraphics/CMakeFiles/rt.dir/render.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
