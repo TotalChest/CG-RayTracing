@@ -32,6 +32,10 @@ Bitmap.h
 properties.h
 /home/totalchest/Документы/ComputerGraphics/properties.h
 
+/home/totalchest/Документы/ComputerGraphics/objects.h
+render.h
+/home/totalchest/Документы/ComputerGraphics/render.h
+
 /home/totalchest/Документы/ComputerGraphics/properties.h
 cmath
 -
@@ -51,6 +55,8 @@ properties.h
 /home/totalchest/Документы/ComputerGraphics/properties.h
 render.h
 /home/totalchest/Документы/ComputerGraphics/render.h
+objects.h
+/home/totalchest/Документы/ComputerGraphics/objects.h
 
 /home/totalchest/Документы/ComputerGraphics/render.h
 properties.h

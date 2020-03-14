@@ -15,15 +15,20 @@ struct Color
 	uint32_t hex()
 	{
 		uint32_t C = 0;
-		C = C | B;
+		C = C | R;
 		C = C | (G << 8); 
-		C = C | (R << 16);
+		C = C | (B << 16);
 		return C;
 	}
 
-	Color operator*(float k)
+	Color operator*(const float k)
 	{
 		return Color(R*k>255?255:R*k, G*k>255?255:G*k, B*k>255?255:B*k);
+	}
+
+	Color operator+(const Color &K)
+	{
+		return Color((R+K.R)>255?255:(R+K.R), (G+K.G)>255?255:(G+K.G), (B+K.B)>255?255:(B+K.B));
 	}
 };
 
@@ -44,6 +49,11 @@ struct Vector
         return x * B.x + y * B.y + z * B.z;
     }
 
+    Vector operator+(const Vector &B)
+    {
+        return Vector(x + B.x, y + B.y, z + B.z);
+    }
+
     Vector operator/(const float c)
 	{
 		return Vector(x / c, y / c, z / c);
@@ -54,7 +64,13 @@ struct Vector
         return sqrtf(x*x + y*y + z*z);
     }
 
-   Point operator*(const float c);
+    Point to_point(const float c);
+
+    Vector operator*(const float c)
+    {
+   		return Vector(x*c, y*c, z*c);
+    }
+
 
 };
 
@@ -79,7 +95,7 @@ struct Point
 };
 
 
-Point Vector::operator*(float c)
+Point Vector::to_point(float c)
 {
 	return Point(x*c, y*c, z*c);
 }
@@ -104,8 +120,12 @@ struct Sphere
     Point center;
     float radius;
     Color color;
+    int specular;
+    float reflective;
 
-    Sphere(const Point &c, const float &r, const Color &col) : center(c), radius(r), color(col) {}
+    Sphere(): center(Point(0,0,0)), radius(0), specular(0), reflective(0), color(Color(0,0,0)) {}
+
+    Sphere(const Point &c, const float &r, const int &s, const float &refl,const Color &col): center(c), radius(r), specular(s), reflective(refl), color(col) {}
 
 };
 
@@ -125,10 +145,6 @@ struct Light
 
 };
 
-
-void build_image(std::vector<uint32_t> &, int);
-
-void render(std::vector<uint32_t> &, Camera &, Sphere &);
 
 
 #endif

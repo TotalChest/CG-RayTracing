@@ -7,6 +7,7 @@ CMakeFiles/rt.dir/main.cpp.o: Bitmap.h
 CMakeFiles/rt.dir/main.cpp.o: main.cpp
 CMakeFiles/rt.dir/main.cpp.o: properties.h
 
+CMakeFiles/rt.dir/render.cpp.o: objects.h
 CMakeFiles/rt.dir/render.cpp.o: properties.h
 CMakeFiles/rt.dir/render.cpp.o: render.cpp
 CMakeFiles/rt.dir/render.cpp.o: render.h
