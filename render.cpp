@@ -1,5 +1,5 @@
 #include "properties.h"
-#include "render.h"
+#include "geometry.h"
 #include "objects.h"
 
  
@@ -139,16 +139,13 @@ Color TraceRay(Point &O, Vector &D, float t_min, float t_max, int depth)
 }
 
 
-extern int threads;
 
 void render(std::vector<uint32_t> &image, Camera &camera)
 {
-
 	omp_set_num_threads(threads);
 	#pragma omp parallel for
 	for(int i = (-1)*(int)HEIGHT/2; i < HEIGHT/2; ++i)
 	{
-		#pragma omp parallel for
     	for(int j = (-1)*(int)WIDTH/2; j < WIDTH/2; ++j)
     	{
         	Vector D = camera.point_to_vector(i, j);
@@ -170,12 +167,14 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 		{
 
 			objects.emplace_back(Point(2, -1, 12), 1, 10, 0.05, Color(70,30,100));
-		    objects.emplace_back(Point(0, 0, 17), 4, 200, 0.2, Color(0,0,200));
-		    objects.emplace_back(Point(-8, -9, 16), 6, 400, 0.6, Color(60,60,60));
-		    objects.emplace_back(Point(-10, 10, 30), 16, 300, 0.3, Color(0,128,0));
-
+		    objects.emplace_back(Point(0, 0, 17), 4, 200, 0.4, Color(0,10,200));
+		    objects.emplace_back(Point(-8, -9, 16), 6, 500, 0.8, Color(60,60,60));
+		    objects.emplace_back(Point(-10, 10, 30), 16, 300, 0.3, Color(255,0,0));
+            objects.emplace_back(Point(15, 10, 31), 15, 500, 0.5, Color(40,200,40));
+            objects.emplace_back(Point(5, -5, 11), 3, 1000, 0.3, Color(215,130,80));
 
 		    lights.push_back(Light(1, 0.8, Point(15,10,0)));
+            lights.push_back(Light(1, 0.4, Point(0,0,-15)));
 		    lights.push_back(Light(2, 0.2, Vector(1,1,-5)));
 		    lights.push_back(Light(0, 0.1));
 

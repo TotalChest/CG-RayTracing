@@ -7,12 +7,11 @@
 
 #include "Bitmap.h"
 
-#include "properties.h"
 
-
+extern const int HEIGHT;
+extern const int WIDTH;
+extern int threads;
 bool build_image(std::vector<uint32_t> &, int);
-
-int threads = 1;
 
 
 int main(int argc, const char** argv)
@@ -47,11 +46,12 @@ int main(int argc, const char** argv)
     if(cmdLineParams.find("-threads") != cmdLineParams.end())
         threads = atoi(cmdLineParams["-threads"].c_str());
 
-    std::vector<uint32_t> image(HEIGHT * WIDTH, 0); 
 
+    std::vector<uint32_t> image(HEIGHT * WIDTH, 0); 
     
     if(build_image(image, sceneId))
         SaveBMP(outFilePath.c_str(), image.data(), HEIGHT, WIDTH);
+
 
     std::cout << "Done." << std::endl;
 

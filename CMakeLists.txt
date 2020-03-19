@@ -11,7 +11,7 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-add_executable(rt main.cpp Bitmap.cpp render.cpp)
+add_executable(rt main.cpp geometry.cpp Bitmap.cpp render.cpp)
 
 target_link_libraries(rt ${ALL_LIBS} )
 

@@ -11,12 +11,14 @@
 
 
 
-const int HEIGHT = 1048;
-const int WIDTH  = 1048;
-const float PI = 3.141592;
-const float EPSILON = 0.00001;
-const int RECURSION_DEPTH = 3;
-const float INF = std::numeric_limits<float>::max();
+int threads = 8;
+extern const int HEIGHT = 1024;
+extern const int WIDTH  = 1024;
+extern const float PI = 3.141592;
+extern const float EPSILON = 0.00001;
+extern const int RECURSION_DEPTH = 3;
+extern const float INF = std::numeric_limits<float>::max();
+
 
 
 
