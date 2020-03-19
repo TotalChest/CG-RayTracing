@@ -45,7 +45,7 @@ Vector RefractRay(Vector &V, Vector &N, float &refractive) {
 }
 
 
-bool ClosestIntersection(Point &O, Vector &D, float t_min, float t_max, float &clo_t, Sphere &sp)
+bool ClosestIntersection(Point &O, Vector &D, float t_min, float t_max, Point &P, Vector &N, Material &mat)
 {
     float closest_t = INF;
     bool closest_sphere = false;
@@ -67,8 +67,10 @@ bool ClosestIntersection(Point &O, Vector &D, float t_min, float t_max, float &c
         }
     }
 
-    clo_t = closest_t;
-    sp = sphere;
+    P = (D.to_point(closest_t) + O);
+    N = P - sphere.center;
+    N = N / N.norm();
+    mat = sphere.material;
 
     return closest_sphere;
 }
@@ -97,9 +99,10 @@ std::pair<float, float> ComputeLighting(Point &P, Vector &N, Vector &V, int spec
             }
 
            
-            float closest_t;
-    		Sphere sphere;
-            if(ClosestIntersection(P, L, EPSILON, t_max, closest_t, sphere))
+    		Material mat;
+            Point P_2;
+            Vector N_2;
+            if(ClosestIntersection(P, L, EPSILON, t_max, P_2, N_2, mat))
                 continue;
 
 
@@ -123,25 +126,23 @@ std::pair<float, float> ComputeLighting(Point &P, Vector &N, Vector &V, int spec
 
 Color TraceRay(Point &O, Vector &D, float t_min, float t_max, int depth)
 {
-    float closest_t;
-    Sphere sphere;
+    Material mat;
+    Point P;
+    Vector N;
 
-    if(!ClosestIntersection(O, D, t_min, t_max, closest_t, sphere))
+    if(!ClosestIntersection(O, D, t_min, t_max, P, N, mat))
         return Back_ground;
 
-    Point P = (D.to_point(closest_t) + O);
-    Vector N = P - sphere.center;
-    N = N / N.norm();
     Vector V = D * (-1.f);
 
-    std::pair<float, float> light = ComputeLighting(P, N, V, sphere.material.specular, sphere.material.specular_index);
-    Color local_color = sphere.material.color * light.first;
+    std::pair<float, float> light = ComputeLighting(P, N, V, mat.specular, mat.specular_index);
+    Color local_color = mat.color * light.first;
     
     if(depth <= 0)
     	return local_color + Color(255,255,255) * light.second;
 
-    float h = sphere.material.refractive_index;
-    float r = std::min(1 - h, sphere.material.reflective);
+    float h = mat.refractive_index;
+    float r = std::min(1 - h, mat.reflective);
 
     local_color = local_color * (1 - h - r);
 
@@ -153,7 +154,7 @@ Color TraceRay(Point &O, Vector &D, float t_min, float t_max, int depth)
     
     if(h > 0)
     {
-        Vector S = RefractRay(V, N, sphere.material.refractive);
+        Vector S = RefractRay(V, N, mat.refractive);
         local_color = local_color + TraceRay(P, S, EPSILON, INF, depth - 1) * h;
     }
 
@@ -187,7 +188,7 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 	{
 		case 0:
 		{
-            Material glass(Color(200,200,200), 100, 0.7, 0.2, 0.8, 5);
+            Material glass(Color(200,200,200), 100, 0.8, 0.2, 0.8, 5);
             Material red(Color(200,20,0), 2, 0.1, 0.05, 0, 1);
             Material mirror(Color(100,100,100), 800, 2, 0.8, 0, 1);
             Material green(Color(40,150,30), 200, 0.2, 0.3, 0, 1);

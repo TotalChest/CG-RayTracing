@@ -27,6 +27,7 @@ struct Vector
     float y;
     float z;
 
+    Vector();
     Vector(const float &x, const float &y, const float &z);
     float operator*(const Vector &B);
     Vector operator+(const Vector &B);
@@ -42,6 +43,7 @@ struct Point
     float y;
     float z;
 
+    Point();
     Point(const float &x, const float &y, const float &z);
     Vector operator-(Point &B);
     Point operator+(Point &B);

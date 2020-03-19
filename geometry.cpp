@@ -21,6 +21,7 @@ Color Color::operator+(const Color &K){
 
 
 
+Vector::Vector(): x(0), y(0), z(0) {}   
 Vector::Vector(const float &x, const float &y, const float &z): x(x), y(y), z(z) {}
 float Vector::operator*(const Vector &B) {
     return x * B.x + y * B.y + z * B.z;
@@ -42,7 +43,8 @@ Vector Vector::operator*(const float c) {
 }
 
 
-    
+
+Point::Point(): x(0), y(0), z(0) {}    
 Point::Point(const float &x, const float &y, const float &z): x(x), y(y), z(z) {}
 Vector Point::operator-(Point &B) {
     return Vector(x - B.x, y - B.y, z - B.z);
