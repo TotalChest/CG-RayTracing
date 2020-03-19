@@ -179,7 +179,7 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 		    lights.push_back(Light(0, 0.1));
 
 
-		    Camera camera(Point(0,0,0), Vector(0,0,1), 60);
+		    Camera camera(Point(0,0,-5), Vector(0,0,1), 60);
 
 		    render(image, camera);
 

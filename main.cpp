@@ -50,7 +50,7 @@ int main(int argc, const char** argv)
     std::vector<uint32_t> image(HEIGHT * WIDTH, 0); 
     
     if(build_image(image, sceneId))
-        SaveBMP(outFilePath.c_str(), image.data(), HEIGHT, WIDTH);
+        SaveBMP(outFilePath.c_str(), image.data(), WIDTH, HEIGHT);
 
 
     std::cout << "Done." << std::endl;

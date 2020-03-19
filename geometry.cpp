@@ -55,7 +55,7 @@ Point Point::operator+(Point &B){
 
 Camera::Camera(const Point &o, const Vector &d, const float &fov): O(o), dir(d), FOV(fov) {}
 Vector Camera::point_to_vector(int i, int j) {
-	return Vector(j*2*tan(FOV*PI/180/2)/WIDTH, i*2*tan(FOV*PI/180/2)/HEIGHT, 1);
+	return Vector(j*2*tan(FOV*PI/180/2)/WIDTH, i*2*tan(FOV*PI/180/2)/WIDTH, 1);
 }
 
 
