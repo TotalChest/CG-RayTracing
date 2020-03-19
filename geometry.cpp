@@ -60,8 +60,18 @@ Vector Camera::point_to_vector(int i, int j) {
 
 
 
-Sphere::Sphere(): center(Point(0,0,0)), radius(0), specular(0), reflective(0), color(Color(0,0,0)) {}
-Sphere::Sphere(const Point &c, const float &r, const int &s, const float &refl,const Color &col): center(c), radius(r), specular(s), reflective(refl), color(col) {}
+Refractive::Refractive(): refract(0), index(1) {}
+Refractive::Refractive(const float &r, const float &i): refract(r), index(i) {}
+
+
+
+Material::Material(): color(Color(0,0,0)), specular(0), reflective(0), refractive() {}
+Material::Material(const Color &c, const int &s, const float &re, const Refractive &ra): color(c), specular(s), reflective(re), refractive(ra) {}
+
+
+
+Sphere::Sphere(): center(Point(0,0,0)), radius(0), material() {}
+Sphere::Sphere(const Point &c, const float &r, const Material &mat): center(c), radius(r), material(mat) {}
 
 
 

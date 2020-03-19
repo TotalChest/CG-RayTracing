@@ -57,16 +57,36 @@ struct Camera
     Vector point_to_vector(int i, int j);
 };
 
-struct Sphere
+
+struct Refractive
 {
-    Point center; // Центр
-    float radius; // Радиус
+	float refract; // Прозрачность
+	float index; // Коэффициент преломления
+	Refractive();
+	Refractive(const float &r, const float &i);
+};
+
+
+struct Material
+{
     Color color; // Цвет
     int specular; // Гладкость
     float reflective; // Отражение
+    Refractive refractive; // Прозрачность
+
+    Material();
+    Material(const Color &c, const int &s, const float &re, const Refractive &ra);
+};
+
+
+struct Sphere
+{
+    Point center;
+    float radius;
+    Material material;
 
     Sphere();
-    Sphere(const Point &c, const float &r, const int &s, const float &refl,const Color &col);
+    Sphere(const Point &c, const float &r, const Material &mat);
 };
 
 

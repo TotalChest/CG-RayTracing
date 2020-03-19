@@ -2,12 +2,12 @@
 #define PROPERTIES_H
 
 #include <cmath>
-#include <limits>
 #include <vector>
 #include <cstdint>
 #include <cassert>
 #include <iostream>
 #include <omp.h>
+#include "geometry.h"
 
 
 
@@ -16,8 +16,9 @@ extern const int HEIGHT = 900;
 extern const int WIDTH  = 1600;
 extern const float PI = 3.1415926535;
 extern const float EPSILON = 0.0001;
-extern const int RECURSION_DEPTH = 3;
-extern const float INF = std::numeric_limits<float>::max();
+extern const int RECURSION_DEPTH = 5;
+extern const float INF = 10000;
+const Color Back_ground(20, 0, 40);
 
 
 
