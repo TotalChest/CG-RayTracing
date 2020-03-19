@@ -11,3 +11,5 @@ $ make
 ```bash
 $ ./rt -out <output_file.bmp> -scene <sceneID> -threads <threads_num>
 ```
+### Example: 
+![Example](/zout.bmp)
