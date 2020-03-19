@@ -58,24 +58,18 @@ struct Camera
 };
 
 
-struct Refractive
-{
-	float refract; // Прозрачность
-	float index; // Коэффициент преломления
-	Refractive();
-	Refractive(const float &r, const float &i);
-};
-
-
 struct Material
 {
     Color color; // Цвет
     int specular; // Гладкость
+    float specular_index; // Уровень гладкости
     float reflective; // Отражение
-    Refractive refractive; // Прозрачность
+    float refractive_index; // Степень прозрачности
+    float refractive; // Коэф. преломления
+    
 
     Material();
-    Material(const Color &c, const int &s, const float &re, const Refractive &ra);
+    Material(const Color &c, const int &s, const float &s_i, const float &re, const float &ra_i, const float &ra);
 };
 
 

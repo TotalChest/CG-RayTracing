@@ -60,13 +60,8 @@ Vector Camera::point_to_vector(int i, int j) {
 
 
 
-Refractive::Refractive(): refract(0), index(1) {}
-Refractive::Refractive(const float &r, const float &i): refract(r), index(i) {}
-
-
-
-Material::Material(): color(Color(0,0,0)), specular(0), reflective(0), refractive() {}
-Material::Material(const Color &c, const int &s, const float &re, const Refractive &ra): color(c), specular(s), reflective(re), refractive(ra) {}
+Material::Material(): color(Color(0,0,0)), specular(0), specular_index(0), reflective(0), refractive_index(0), refractive(0) {}
+Material::Material(const Color &c, const int &s, const float &s_i, const float &re, const float &ra_i, const float &ra): color(c), specular(s), specular_index(s_i), reflective(re), refractive_index(ra_i), refractive(ra) {}
 
 
 

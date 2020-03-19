@@ -18,7 +18,7 @@ extern const float PI = 3.1415926535;
 extern const float EPSILON = 0.0001;
 extern const int RECURSION_DEPTH = 5;
 extern const float INF = 10000;
-const Color Back_ground(20, 0, 40);
+const Color Back_ground(15, 0, 35);
 
 
 

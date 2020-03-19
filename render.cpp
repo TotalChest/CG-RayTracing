@@ -74,13 +74,13 @@ bool ClosestIntersection(Point &O, Vector &D, float t_min, float t_max, float &c
 }
 
 
-float ComputeLighting(Point &P, Vector &N, Vector &V, int specular)
+std::pair<float, float> ComputeLighting(Point &P, Vector &N, Vector &V, int specular, float specular_index)
 {
-    float i = 0.0;
+    float d = 0.0, s = 0.0;
     for(Light & l : lights)
     {
         if (l.type == 0)
-            i += l.intensity;
+            d += l.intensity;
         else
 		{
 			Vector L(0, 0, 0);
@@ -104,7 +104,7 @@ float ComputeLighting(Point &P, Vector &N, Vector &V, int specular)
 
 
             float k = (N * L)/(N.norm()*L.norm());
-            i += l.intensity * std::max(0.f, k);
+            d += l.intensity * std::max(0.f, k);
 
 
             if (specular != -1)
@@ -112,12 +112,12 @@ float ComputeLighting(Point &P, Vector &N, Vector &V, int specular)
             	Vector R = ReflectRay(L, N);
                 k = (R * V)/(R.norm() * V.norm());
                 if (k > 0.f)
-                    i += l.intensity * 1.5 * pow(k , specular);
+                    s += l.intensity * specular_index * pow(k , specular);
            	}
 
         }
     }
-    return i;
+    return std::make_pair(d, s);
 }
 
 
@@ -133,21 +133,31 @@ Color TraceRay(Point &O, Vector &D, float t_min, float t_max, int depth)
     Vector N = P - sphere.center;
     N = N / N.norm();
     Vector V = D * (-1.f);
-    Color local_color = sphere.material.color * ComputeLighting(P, N, V, sphere.material.specular);
 
-    float h = sphere.material.refractive.refract;
-    float r = std::min(1 - h, sphere.material.reflective);
+    std::pair<float, float> light = ComputeLighting(P, N, V, sphere.material.specular, sphere.material.specular_index);
+    Color local_color = sphere.material.color * light.first;
     
-    if(depth <= 0 || r <= 0)
-    	return local_color;
+    if(depth <= 0)
+    	return local_color + Color(255,255,255) * light.second;
 
-    Vector R = ReflectRay(V, N);
-    Color reflected_color = TraceRay(P, R, EPSILON, INF, depth - 1);
-    Vector S = RefractRay(V, N, sphere.material.refractive.index);
-    Color refracted_color = TraceRay(P, S, EPSILON, INF, depth - 1);
+    float h = sphere.material.refractive_index;
+    float r = std::min(1 - h, sphere.material.reflective);
 
-    return local_color * (1 - r - h) + reflected_color * r + refracted_color * h;
+    local_color = local_color * (1 - h - r);
 
+    if(r > 0)
+    {
+        Vector R = ReflectRay(V, N);
+        local_color = local_color + TraceRay(P, R, EPSILON, INF, depth - 1) * r;
+    }
+    
+    if(h > 0)
+    {
+        Vector S = RefractRay(V, N, sphere.material.refractive);
+        local_color = local_color + TraceRay(P, S, EPSILON, INF, depth - 1) * h;
+    }
+
+    return local_color + Color(255,255,255) * light.second;
 }
 
 
@@ -177,18 +187,22 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 	{
 		case 0:
 		{
+            Material glass(Color(200,200,200), 100, 0.7, 0.2, 0.8, 5);
+            Material red(Color(200,20,0), 2, 0.1, 0.05, 0, 1);
+            Material mirror(Color(100,100,100), 800, 2, 0.8, 0, 1);
+            Material green(Color(40,150,30), 200, 0.2, 0.3, 0, 1);
+            Material pastel(Color(215,130,80), 600, 1, 0.2, 0, 1);
 
-			objects.emplace_back(Point(2, -1, 12), 1.5, Material(Color(250, 230, 0), 10, 0.05, Refractive(0.6,1)) );
-		    objects.emplace_back(Point(0, 0, 17), 4, Material(Color(200,200,200), 800, 0.02, Refractive(0.9, 5)) );
-		    objects.emplace_back(Point(-10, -11, 17), 10, Material(Color(100,100,100), 500, 0.8, Refractive(0,1)) );
-		    objects.emplace_back(Point(-10, 10, 34), 16, Material(Color(255,0,0), 300, 0.3, Refractive(0,1)) );
-            objects.emplace_back(Point(15, 10, 31), 15, Material(Color(50,200,40), 600, 0.5, Refractive(0,1)) );
-            objects.emplace_back(Point(5, -5, 11), 3, Material(Color(215,130,80), 1000, 0.3, Refractive(0,1)) );
+		    objects.emplace_back(Point(0, 0, 17), 4, glass);
+		    objects.emplace_back(Point(-10, -11, 17), 10, mirror);
+		    objects.emplace_back(Point(-10, 10, 34), 16, red);
+            objects.emplace_back(Point(15, 10, 31), 15, green);
+            objects.emplace_back(Point(5, -5, 11), 3, pastel);
 
 		    lights.push_back(Light(1, 0.8, Point(15,10,0)));
             lights.push_back(Light(1, 0.3, Point(0,10,5)));
 		    lights.push_back(Light(2, 0.2, Vector(1,1,-5)));
-		    lights.push_back(Light(0, 0.1));
+		    lights.push_back(Light(0, 0.05));
 
 
 		    Camera camera(Point(0,0,-7), Vector(0,0,1), 60);
