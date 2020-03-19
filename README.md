@@ -1,4 +1,4 @@
-# ComputerGraphics
+# Computer Graphics - Ray Tracing 
 CMC course "Сomputer graphics"
 
 ### Build:
