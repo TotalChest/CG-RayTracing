@@ -3,6 +3,7 @@
 extern const int HEIGHT;
 extern const int WIDTH;
 extern const float PI;
+extern const float INF;
 
 Color::Color(const uint32_t &r, const uint32_t &g, const uint32_t &b): R(r), G(g), B(b) {}
 uint32_t Color::hex() {
@@ -69,6 +70,29 @@ Material::Material(const Color &c, const int &s, const float &s_i, const float &
 
 Sphere::Sphere(): center(Point(0,0,0)), radius(0), material() {}
 Sphere::Sphere(const Point &c, const float &r, const Material &mat): center(c), radius(r), material(mat) {}
+Vector Sphere::get_normal(Point &P)
+{
+    Vector N = P - center;
+    N = N / N.norm();
+    return N;
+}
+std::pair<float, float> Sphere::IntersectRay(Point &O, Vector &D)
+{
+    float r = radius;
+    Vector OC = O - center;
+
+    float k1 = D * D;
+    float k2 = 2.f * (OC * D);
+    float k3 = OC * OC - r*r;
+
+    float discriminant = k2*k2 - 4.f*k1*k3;
+    if(discriminant < 0.f)
+        return std::make_pair(INF, INF);
+
+    float t1 = (-k2 + sqrt(discriminant)) / (2.f*k1);
+    float t2 = (-k2 - sqrt(discriminant)) / (2.f*k1);
+    return std::make_pair(t1, t2);
+}
 
 
 

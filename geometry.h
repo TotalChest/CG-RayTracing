@@ -83,6 +83,8 @@ struct Sphere
 
     Sphere();
     Sphere(const Point &c, const float &r, const Material &mat);
+    Vector get_normal(Point &P);
+    std::pair<float, float> IntersectRay(Point &O, Vector &D);
 };
 
 

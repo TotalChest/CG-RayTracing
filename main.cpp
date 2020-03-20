@@ -11,6 +11,7 @@
 extern const int HEIGHT;
 extern const int WIDTH;
 extern int threads;
+extern int sceneId;
 bool build_image(std::vector<uint32_t> &, int);
 
 
@@ -35,13 +36,16 @@ int main(int argc, const char** argv)
         }
     }
 
-    std::string outFilePath = "zout.bmp";
-    if(cmdLineParams.find("-out") != cmdLineParams.end())
-        outFilePath = cmdLineParams["-out"];
-
-    int sceneId = 0;
     if(cmdLineParams.find("-scene") != cmdLineParams.end())
         sceneId = atoi(cmdLineParams["-scene"].c_str());
+
+    std::string outFilePath;
+    if(cmdLineParams.find("-out") != cmdLineParams.end())
+        outFilePath = cmdLineParams["-out"];
+    else
+        outFilePath = std::string("Scene_") + std::to_string(sceneId) + ".bmp";
+
+    
 
     if(cmdLineParams.find("-threads") != cmdLineParams.end())
         threads = atoi(cmdLineParams["-threads"].c_str());
