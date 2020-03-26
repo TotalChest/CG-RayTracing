@@ -101,6 +101,13 @@ std::pair<float, float> ComputeLighting(Point &P, Vector &N, Vector &V, int spec
             if(ClosestIntersection(P, L, EPSILON, t_max, P_2, N_2, mat)){
                 float k = (N * L)/(N.norm()*L.norm());
                 d += l.intensity * std::max(0.f, k) * mat.refractive_index;
+                if (specular != -1)
+                {
+                    Vector R = ReflectRay(L, N);
+                    k = (R * V)/(R.norm() * V.norm());
+                    if (k > 0.f)
+                        s += l.intensity * specular_index * pow(k , specular) * mat.refractive_index;
+                }
                 continue;
             }
 
@@ -225,23 +232,21 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 		{
             Back_ground = Color(200, 197, 230);
 
-            Material red_glass(Color(230,100,0), 600, 0.6, 0.05, 0.65, 1);
+            Material red_glass(Color(240,40,10), 600, 0.6, 0.05, 0.7, 1);
             Material dark_mirror(Color(10,60,70), 700, 0.8, 0.5, 0, 1);
-            Material pastel(Color(120, 160, 215), 1, 0.05, 0, 0, 1);
-            Material lamp(Color(255, 255, 255), 1000, 0, 0, 0.1, 1);
+            Material pastel(Color(200, 200, 210), 0.4, 0.02, 0, 0, 1);
+            Material dark_pastel(Color(170, 170, 190), 0.5, 0.05, 0, 0, 1);
 
             Sphere sphere1(Point(6, -2, 15), 5, red_glass);
-            Sphere sphere2(Point(0, 10.5, 15), 4, lamp);
-            Sphere sphere3(Point(-8, -4, 17), 3, dark_mirror);
+            Sphere sphere2(Point(-8, -4, 17), 3, dark_mirror);
             Plane plane1(Vector(0, 0, -1), Point(0, 0, 20), pastel);
             Plane plane2(Vector(-1, 0, 0), Point(11, 0, 0), pastel);
-            Plane plane3(Vector(0, -1, 0), Point(0, 7, 0), pastel);
+            Plane plane3(Vector(0, -1, 0), Point(0, 7, 0), dark_pastel);
             Plane plane4(Vector(1, 0, 0), Point(-11, 0, 0), pastel);
-            Plane plane5(Vector(0, 1, 0), Point(0, -7, 0), pastel);
+            Plane plane5(Vector(0, 1, 0), Point(0, -7, 0), dark_pastel);
             Plane plane6(Vector(0, 0, 1), Point(0, 0, -11), pastel);
 
 		    objects.push_back(&sphere1);
-            objects.push_back(&sphere3);
             objects.push_back(&sphere2);
             objects.push_back(&plane1);
             objects.push_back(&plane2);
@@ -250,7 +255,8 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             objects.push_back(&plane5);
             objects.push_back(&plane6);
 
-		    lights.push_back(Light(1, 0.7, Point(0,6,15)));
+		    lights.push_back(Light(1, 0.5, Point(0,3,15)));
+            lights.push_back(Light(1, 0.5, Point(0,3,-5)));
 		    lights.push_back(Light(0, 0.2));
 
 		    Camera camera(Point(0,0,-10), Vector(0,0,1), 60);
