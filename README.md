@@ -12,4 +12,5 @@ $ make
 $ ./rt -out <output_file.bmp> -scene <sceneID> -threads <threads_num>
 ```
 ### Example: 
-![Example](/zout.bmp)
+![Example](/Scene_0.bmp)
+![Example](/Scene_1.bmp)
