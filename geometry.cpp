@@ -4,6 +4,7 @@ extern const int HEIGHT;
 extern const int WIDTH;
 extern const float PI;
 extern const float INF;
+extern const float EPSILON;
 
 Color::Color(const uint32_t &r, const uint32_t &g, const uint32_t &b): R(r), G(g), B(b) {}
 uint32_t Color::hex() {
@@ -68,8 +69,13 @@ Material::Material(const Color &c, const int &s, const float &s_i, const float &
 
 
 
-Sphere::Sphere(): center(Point(0,0,0)), radius(0), material() {}
-Sphere::Sphere(const Point &c, const float &r, const Material &mat): center(c), radius(r), material(mat) {}
+Object::Object(): material() {}
+Object::Object(const Material &mat): material(mat) {}
+
+
+
+Sphere::Sphere(): center(Point(0,0,0)), radius(0), Object() {}
+Sphere::Sphere(const Point &c, const float &r, const Material &mat): center(c), radius(r), Object(mat) {}
 Vector Sphere::get_normal(Point &P)
 {
     Vector N = P - center;
@@ -92,6 +98,22 @@ std::pair<float, float> Sphere::IntersectRay(Point &O, Vector &D)
     float t1 = (-k2 + sqrt(discriminant)) / (2.f*k1);
     float t2 = (-k2 - sqrt(discriminant)) / (2.f*k1);
     return std::make_pair(t1, t2);
+}
+
+
+
+Plane::Plane(): normal(Vector(0,0,0)), point(Point(0, 0, 0)), Object() {}
+Plane::Plane(const Vector &n, const Point &p, const Material &mat): normal(n), point(p), Object(mat) {}
+Vector Plane::get_normal(Point &P) { return normal;}
+std::pair<float, float> Plane::IntersectRay(Point &O, Vector &D)
+{
+    if (fabs(D * normal / normal.norm()) > EPSILON)
+    {
+        float plane_dist = (-1.0)*((O - point) * normal / normal.norm()) / (D * normal / normal.norm());
+        if (plane_dist > 0)
+            return std::make_pair(plane_dist, INF); 
+    }
+    return std::make_pair(INF, INF);
 }
 
 
