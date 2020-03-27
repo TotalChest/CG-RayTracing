@@ -11,6 +11,14 @@ $ make
 ```bash
 $ ./rt -out <output_file.bmp> -scene <sceneID> -threads <threads_num>
 ```
-### Example: 
+### Features:
+- Phong model
+- Shadows
+- Specular
+- Reflective
+- Refractive
+- Threads
+- Enviroment map
+### Examples: 
 ![Example](/Scene_0.bmp)
 ![Example](/Scene_1.bmp)
