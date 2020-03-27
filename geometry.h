@@ -13,6 +13,7 @@ struct Color
 	uint32_t G;
 	uint32_t B;
 
+	Color();
 	Color(const uint32_t &r, const uint32_t &g, const uint32_t &b);
 	uint32_t hex();
 	Color operator*(const float k);

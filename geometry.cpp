@@ -6,6 +6,8 @@ extern const float PI;
 extern const float INF;
 extern const float EPSILON;
 
+
+Color::Color() {}
 Color::Color(const uint32_t &r, const uint32_t &g, const uint32_t &b): R(r), G(g), B(b) {}
 uint32_t Color::hex() {
 	uint32_t C = 0;

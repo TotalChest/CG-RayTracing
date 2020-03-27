@@ -8,6 +8,8 @@
 #include <iostream>
 #include <omp.h>
 #include "geometry.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "lib/stb_image.h"
 
 
 int sceneId = 1;

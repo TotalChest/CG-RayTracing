@@ -11,8 +11,8 @@ Vector ReflectRay(Vector &V, Vector &N) {
 }
 
 
-Vector RefractRay(Vector &V, Vector &N, float &refractive) {
-    float cos = (V * N)/(V.norm() * N.norm());
+bool RefractRay(Vector &V, Vector &N, float &refractive, Vector &S) {
+    float cos = (-1.0)*(V * N)/(V.norm() * N.norm());
     float n1 = 1, n2 = refractive;
     Vector n = N;
     if (cos < 0) {
@@ -21,8 +21,11 @@ Vector RefractRay(Vector &V, Vector &N, float &refractive) {
         n = N * (-1);
     }
     float A = n1 / n2;
-    float k = 1 - A*A*(1 - cos*cos);
-    return k < 0 ? Vector(0, 0, 0) : V*A*(-1.f) + n*(A*cos - sqrt(k));
+    float k = 1.0 - A*A*(1.0 - cos*cos);
+    if(k < 0)
+        return false;
+    S = V*A + n*(A*cos - sqrt(k));
+    return true;
 }
 
 
@@ -98,7 +101,7 @@ std::pair<float, float> ComputeLighting(Point &P, Vector &N, Vector &V, int spec
     		Material mat;
             Point P_2;
             Vector N_2;
-            if(ClosestIntersection(P, L, EPSILON, t_max, P_2, N_2, mat)){
+            if(ClosestIntersection(P, L, EPSILON, t_max, P_2, N_2, mat) && (Point(0,0,0) - P_2).norm() < 95){
                 float k = (N * L)/(N.norm()*L.norm());
                 d += l.intensity * std::max(0.f, k) * mat.refractive_index;
                 if (specular != -1)
@@ -111,9 +114,8 @@ std::pair<float, float> ComputeLighting(Point &P, Vector &N, Vector &V, int spec
                 continue;
             }
 
-
             float k = (N * L)/(N.norm()*L.norm());
-            d += l.intensity * std::max(0.f, k);
+            d += l.intensity * std::max(0.f, fabs(k));
 
 
             if (specular != -1)
@@ -138,6 +140,16 @@ Color TraceRay(Point &O, Vector &D, float t_min, float t_max, int depth)
 
     if(!ClosestIntersection(O, D, t_min, t_max, P, N, mat))
         return Back_ground;
+    if((Point(0,0,0) - P).norm() > 95)
+    {
+        if(envmap.size())
+        {
+            int a = (atan2(P.z, P.x) / (2*PI) + .5) * envmap_width;
+            int b = acos(P.y / 100) / PI * envmap_height;
+            return envmap[a+b*envmap_width];
+        }
+        return Back_ground;
+    }
 
     Vector V = D * (-1.f);
 
@@ -160,8 +172,9 @@ Color TraceRay(Point &O, Vector &D, float t_min, float t_max, int depth)
     
     if(h > 0)
     {
-        Vector S = RefractRay(V, N, mat.refractive);
-        local_color = local_color + TraceRay(P, S, EPSILON, INF, depth - 1) * h;
+        Vector S(0,0,0);
+        if(RefractRay(D, N, mat.refractive, S))
+            local_color = local_color + TraceRay(P, S, EPSILON, INF, depth - 1) * h;
     }
 
     return local_color + Color(255,255,255) * light.second;
@@ -196,8 +209,22 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 		{
             Back_ground = Color(15, 0, 35);
 
-            Material glass(Color(200,200,200), 100, 0.8, 0.2, 0.8, 5);
-            Material red(Color(200,20,0), 2, 0.1, 0.05, 0, 1);
+            int n = -1;
+            unsigned char *data = stbi_load("textures/space.jpg", &envmap_width, &envmap_height, &n, 0);
+            if (!data || 3!=n) {
+                std::cerr << "Error: can not load the environment map" << std::endl;
+                return -1;
+            }
+            envmap = std::vector<Color>(envmap_width*envmap_height);
+            for (int j = 0; j<envmap_height; j++)
+                for (int i = 0; i<envmap_width; i++)
+                    envmap[i+j*envmap_width] = Color(data[(i+j*envmap_width)*3+0], data[(i+j*envmap_width)*3+1], data[(i+j*envmap_width)*3+2]) * 0.2;
+            stbi_image_free(data);
+
+            Sphere env(Point(0, 0, 0), 100, Material());
+
+            Material glass(Color(200,200,200), 200, 0.8, 0.2, 0.8, 3);
+            Material red(Color(200,20,0), 2, 0.1, 0.04, 0, 1);
             Material mirror(Color(100,100,100), 800, 2, 0.8, 0, 1);
             Material green(Color(40,150,30), 200, 0.2, 0.3, 0, 1);
             Material pastel(Color(215,130,80), 600, 1, 0.2, 0, 1);
@@ -208,6 +235,7 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             Sphere sphere4(Point(15, 10, 31), 15, green);
             Sphere sphere5(Point(5, -5, 11), 3, pastel);
 
+            objects.push_back(&env);
             objects.push_back(&sphere1);
             objects.push_back(&sphere2);
             objects.push_back(&sphere3);
@@ -232,7 +260,7 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 		{
             Back_ground = Color(200, 197, 230);
 
-            Material red_glass(Color(240,40,10), 600, 0.6, 0.05, 0.7, 1);
+            Material red_glass(Color(240,40,10), 600, 0.6, 0.05, 0.75, 1.02);
             Material dark_mirror(Color(10,60,70), 700, 0.8, 0.5, 0, 1);
             Material pastel(Color(200, 200, 210), 0.4, 0.02, 0, 0, 1);
             Material dark_pastel(Color(170, 170, 190), 0.5, 0.05, 0, 0, 1);
@@ -269,6 +297,21 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 		}
 		case 2:
 		{
+            Back_ground = Color(200, 200, 200);
+
+            Material pastel(Color(255,255,255), -1, 0, 0, 0, 1);
+
+            Sphere env(Point(0, 0, 0), 100, pastel);
+
+            objects.push_back(&env);
+
+            lights.push_back(Light(1, 0.9, Point(0,0,0)));
+            lights.push_back(Light(0, 0.05));
+
+            Camera camera(Point(0,0,0), Vector(0,0,1), 60);
+
+            render(image, camera);
+
 			std::cout << "Scene 2" << std::endl;
 
 			return true;
