@@ -19,6 +19,8 @@ $ ./rt -out <output_file.bmp> -scene <sceneID> -threads <threads_num>
 - Refractive
 - Threads
 - Enviroment map
+- 3D models
 ### Examples: 
 ![Example](/Scene_0.bmp)
 ![Example](/Scene_1.bmp)
+![Example](/Scene_2.bmp)

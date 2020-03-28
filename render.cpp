@@ -1,5 +1,6 @@
 #include "properties.h"
 #include "geometry.h"
+#include "model.h"
 #include "objects.h"
 
 
@@ -22,7 +23,7 @@ bool RefractRay(Vector &V, Vector &N, float &refractive, Vector &S) {
     }
     float A = n1 / n2;
     float k = 1.0 - A*A*(1.0 - cos*cos);
-    if(k < 0)
+    if(k <= 0)
         return false;
     S = V*A + n*(A*cos - sqrt(k));
     return true;
@@ -57,6 +58,28 @@ bool ClosestIntersection(Point &O, Vector &D, float t_min, float t_max, Point &P
         N = object->get_normal(P);
         mat = object->material;
     }
+
+    if(model.exist)
+    {
+        float model_dist = INF;
+        for (int t=0; t<model.nfaces(); t++)
+        {
+            float dist;
+            if (model.ray_triangle_intersect(t, O, D, dist) && dist < closest_t)
+            {
+                Intersection = true;
+                closest_t = dist;
+                P = D.to_point(closest_t) + O;
+                Point v0 = model.point(model.vert(t, 0));
+                Point v1 = model.point(model.vert(t, 1));
+                Point v2 = model.point(model.vert(t, 2));
+                N = cross(v1-v0, v2-v0);
+                N = N / N.norm();
+                mat = model.material;
+            }
+        }
+    }
+
 /*
 
     if (fabs(D.y) > EPSILON)
@@ -185,9 +208,13 @@ Color TraceRay(Point &O, Vector &D, float t_min, float t_max, int depth)
 void render(std::vector<uint32_t> &image, Camera &camera)
 {
 	omp_set_num_threads(threads);
-	#pragma omp parallel for
+    std::cout << "Threads: " << threads << std::endl;
+	
 	for(int i = (-1)*HEIGHT/2; i < HEIGHT/2; ++i)
 	{
+        if((i+HEIGHT/2)%(HEIGHT/10) == 0)
+            std::cout << "\rProgress: " <<  (i+HEIGHT/2)/(HEIGHT/100) << "%" << std::flush;
+        #pragma omp parallel for
     	for(int j = (-1)*WIDTH/2; j < WIDTH/2; ++j)
     	{
         	Vector D = camera.point_to_vector(i, j);
@@ -195,6 +222,7 @@ void render(std::vector<uint32_t> &image, Camera &camera)
         	image[(i+HEIGHT/2)*WIDTH + (j+WIDTH/2)] = color.hex();
     	}
 	}
+    std::cout << "\rProgress: 100%\n";
 
    return;
 }
@@ -207,6 +235,8 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 	{
 		case 0:
 		{
+            std::cout << "Scene 0" << std::endl;
+
             Back_ground = Color(15, 0, 35);
 
             int n = -1;
@@ -218,9 +248,8 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             envmap = std::vector<Color>(envmap_width*envmap_height);
             for (int j = 0; j<envmap_height; j++)
                 for (int i = 0; i<envmap_width; i++)
-                    envmap[i+j*envmap_width] = Color(data[(i+j*envmap_width)*3+0], data[(i+j*envmap_width)*3+1], data[(i+j*envmap_width)*3+2]) * 0.2;
+                    envmap[i+j*envmap_width] = Color(data[(i+j*envmap_width)*3+0], data[(i+j*envmap_width)*3+1], data[(i+j*envmap_width)*3+2]) * 0.4;
             stbi_image_free(data);
-
             Sphere env(Point(0, 0, 0), 100, Material());
 
             Material glass(Color(200,200,200), 200, 0.8, 0.2, 0.8, 3);
@@ -252,18 +281,19 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 
 		    render(image, camera);
 
-		    std::cout << "Scene 0" << std::endl;
-
 		    return true;
 		}
 		case 1:
 		{
+            std::cout << "Scene 1" << std::endl;
+
             Back_ground = Color(200, 197, 230);
 
             Material red_glass(Color(240,40,10), 600, 0.6, 0.05, 0.75, 1.02);
             Material dark_mirror(Color(10,60,70), 700, 0.8, 0.5, 0, 1);
             Material pastel(Color(200, 200, 210), 0.4, 0.02, 0, 0, 1);
             Material dark_pastel(Color(170, 170, 190), 0.5, 0.05, 0, 0, 1);
+            Material lamp(Color(255, 255, 255), 10, 1, 0, 0, 1);
 
             Sphere sphere1(Point(6, -2, 15), 5, red_glass);
             Sphere sphere2(Point(-8, -4, 17), 3, dark_mirror);
@@ -274,6 +304,9 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             Plane plane5(Vector(0, 1, 0), Point(0, -7, 0), dark_pastel);
             Plane plane6(Vector(0, 0, 1), Point(0, 0, -11), pastel);
 
+            model = Model("models/lamp.obj");
+            model.material = lamp;
+
 		    objects.push_back(&sphere1);
             objects.push_back(&sphere2);
             objects.push_back(&plane1);
@@ -283,36 +316,48 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             objects.push_back(&plane5);
             objects.push_back(&plane6);
 
-		    lights.push_back(Light(1, 0.5, Point(0,3,15)));
-            lights.push_back(Light(1, 0.5, Point(0,3,-5)));
+		    lights.push_back(Light(1, 0.4, Point(0,2,15)));
+            lights.push_back(Light(1, 0.4, Point(0,2,-5)));
 		    lights.push_back(Light(0, 0.2));
 
-		    Camera camera(Point(0,0,-10), Vector(0,0,1), 60);
+		    Camera camera(Point(0,0,-10), Vector(0,0,1), 70);
 
 		    render(image, camera);
-
-			std::cout << "Scene 1" << std::endl;
 
 			return true;
 		}
 		case 2:
 		{
+            std::cout << "Scene 2" << std::endl;
+
             Back_ground = Color(200, 200, 200);
 
-            Material pastel(Color(255,255,255), -1, 0, 0, 0, 1);
+            int n = -1;
+            unsigned char *data = stbi_load("textures/space.jpg", &envmap_width, &envmap_height, &n, 0);
+            if (!data || 3!=n)
+            {
+                std::cerr << "Error: can not load the environment map" << std::endl;
+                return -1;
+            }
+            envmap = std::vector<Color>(envmap_width*envmap_height);
+            for (int j = 0; j<envmap_height; j++)
+                for (int i = 0; i<envmap_width; i++)
+                    envmap[i+j*envmap_width] = Color(data[(i+j*envmap_width)*3+0], data[(i+j*envmap_width)*3+1], data[(i+j*envmap_width)*3+2]) * 0.3;
+            stbi_image_free(data);
+            Sphere env(Point(0, 0, 0), 100, Material());
 
-            Sphere env(Point(0, 0, 0), 100, pastel);
+            model = Model("models/rocket.obj");
 
             objects.push_back(&env);
 
-            lights.push_back(Light(1, 0.9, Point(0,0,0)));
+            lights.push_back(Light(1, 0.5, Point(10,10,-35)));
+            lights.push_back(Light(1, 0.3, Point(-5,-30,-10)));
+            lights.push_back(Light(1, 0.4, Point(-20,50,-40)));
             lights.push_back(Light(0, 0.05));
 
-            Camera camera(Point(0,0,0), Vector(0,0,1), 60);
+            Camera camera(Point(0,0,-40), Vector(0,0,1), 90);
 
             render(image, camera);
-
-			std::cout << "Scene 2" << std::endl;
 
 			return true;
 		}

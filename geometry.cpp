@@ -109,7 +109,7 @@ Plane::Plane(const Vector &n, const Point &p, const Material &mat): normal(n), p
 Vector Plane::get_normal(Point &P) { return normal;}
 std::pair<float, float> Plane::IntersectRay(Point &O, Vector &D)
 {
-    if (fabs(D * normal / normal.norm()) > EPSILON)
+    if (fabs(D * normal / normal.norm()) > 1e-5)
     {
         float plane_dist = (-1.0)*((O - point) * normal / normal.norm()) / (D * normal / normal.norm());
         if (plane_dist > 0)
@@ -125,3 +125,10 @@ Light::Light(const size_t &t, const float &intens) : type(t), intensity(intens),
 Light::Light(const size_t &t, const float &intens, const Point &p) : type(t), intensity(intens), position(p), direction(Vector(0,0,0)) {}
 
 Light::Light(const size_t &t, const float &intens, const Vector &v) : type(t), intensity(intens), direction(v), position(Point(0,0,0)) {}
+
+
+
+Vector cross(Vector v1, Vector v2) {
+    return Vector(v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x*v2.z, v1.x*v2.y - v1.y*v2.x);
+}
+

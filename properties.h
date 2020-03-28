@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cassert>
 #include <iostream>
+#include <string>
 #include <omp.h>
 #include "geometry.h"
 #define STB_IMAGE_IMPLEMENTATION

@@ -122,5 +122,7 @@ struct Light
     Light(const size_t &t, const float &intens, const Vector &v);
 };
 
+Vector cross(Vector v1, Vector v2);
+
 
 #endif
