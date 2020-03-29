@@ -110,6 +110,19 @@ struct Plane : Object
 };
 
 
+struct Triangle : Object
+{
+    Point v0;
+    Point v1;
+    Point v2;
+
+    Triangle();
+    Triangle(const Point v0, const Point v1, const Point v2, const Material &mat);
+    Vector get_normal(Point &P);
+    std::pair<float, float> IntersectRay(Point &O, Vector &D);
+};
+
+
 struct Light
 {
 	size_t type;

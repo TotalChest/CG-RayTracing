@@ -120,6 +120,31 @@ std::pair<float, float> Plane::IntersectRay(Point &O, Vector &D)
 
 
 
+Triangle::Triangle(): v0(Point(0,0,0)), v1(Point(0,0,0)), v2(Point(0,0,0)),Object() {}
+Triangle::Triangle(const Point v0, const Point v1, const Point v2, const Material &mat): v0(v0), v1(v1), v2(v2), Object(mat) {}
+Vector Triangle::get_normal(Point &P) { return cross(v1-v0, v2-v0);}
+std::pair<float, float> Triangle::IntersectRay(Point &O, Vector &D)
+{
+    Vector edge1 = v1 - v0;
+    Vector edge2 = v2 - v0;
+    Vector pvec = cross(D, edge2);
+    float det = edge1 * pvec;
+    if (det < 1e-5 && det > -1e-5) return std::make_pair(INF, INF);
+
+    Vector tvec = O - v0;
+    float u = tvec * pvec;
+    if (u < 0 || u > det) return std::make_pair(INF, INF);
+
+    Vector qvec = cross(tvec, edge1);
+    float v = D * qvec;
+    if (v < 0 || u + v > det) return std::make_pair(INF, INF);
+
+    float tnear = edge2 * qvec * (1./det);
+    return std::make_pair(tnear, INF);
+}
+
+
+
 Light::Light(const size_t &t, const float &intens) : type(t), intensity(intens), position(Point(0,0,0)), direction(Vector(0,0,0)) {}
 
 Light::Light(const size_t &t, const float &intens, const Point &p) : type(t), intensity(intens), position(p), direction(Vector(0,0,0)) {}

@@ -289,10 +289,11 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 
             Back_ground = Color(200, 197, 230);
 
-            Material red_glass(Color(240,40,10), 600, 0.6, 0.05, 0.75, 1.02);
+            Material red_glass(Color(240,40,10), 600, 0.6, 0.05, 0.75, 1.05);
+            Material green_glass(Color(10,100,20), 600, 0.6, 0.05, 0.75, 1.00);
             Material dark_mirror(Color(10,60,70), 700, 0.8, 0.5, 0, 1);
-            Material pastel(Color(200, 200, 210), 0.4, 0.02, 0, 0, 1);
-            Material dark_pastel(Color(170, 170, 190), 0.5, 0.05, 0, 0, 1);
+            Material pastel(Color(170, 125, 80), 0.4, 0.02, 0, 0, 1);
+            Material dark_pastel(Color(145, 90, 40), 0.5, 0.05, 0, 0, 1);
             Material lamp(Color(255, 255, 255), 10, 1, 0, 0, 1);
 
             Sphere sphere1(Point(6, -2, 15), 5, red_glass);
@@ -303,9 +304,9 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             Plane plane4(Vector(1, 0, 0), Point(-11, 0, 0), pastel);
             Plane plane5(Vector(0, 1, 0), Point(0, -7, 0), dark_pastel);
             Plane plane6(Vector(0, 0, 1), Point(0, 0, -11), pastel);
-
-            model = Model("lamp.obj");
-            model.material = lamp;
+            Triangle triangle1(Point(-5, -7, 8), Point(-2, -3, 12), Point(2, -7, 9), green_glass);
+            Triangle triangle2(Point(-5, -7, 8), Point(-2, -3, 12), Point(-3, -7, 14), green_glass);
+            Triangle triangle3(Point(-3, -7, 14), Point(-2, -3, 12), Point(2, -7, 9), green_glass);
 
 		    objects.push_back(&sphere1);
             objects.push_back(&sphere2);
@@ -315,6 +316,9 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             objects.push_back(&plane4);
             objects.push_back(&plane5);
             objects.push_back(&plane6);
+            objects.push_back(&triangle1);
+            objects.push_back(&triangle2);
+            objects.push_back(&triangle3);
 
 		    lights.push_back(Light(1, 0.4, Point(0,2,15)));
             lights.push_back(Light(1, 0.4, Point(0,2,-5)));
