@@ -342,11 +342,12 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             envmap = std::vector<Color>(envmap_width*envmap_height);
             for (int j = 0; j<envmap_height; j++)
                 for (int i = 0; i<envmap_width; i++)
-                    envmap[i+j*envmap_width] = Color(data[(i+j*envmap_width)*3+0], data[(i+j*envmap_width)*3+1], data[(i+j*envmap_width)*3+2]) * 0.3;
+                    envmap[i+j*envmap_width] = Color(data[(i+j*envmap_width)*3+0], data[(i+j*envmap_width)*3+1], data[(i+j*envmap_width)*3+2]) * 0.5;
             stbi_image_free(data);
             Sphere env(Point(0, 0, 0), 100, Material());
 
             model = Model("models/rocket.obj");
+            model.material = Material(Color(170, 160, 210), 200, 0.6, 0.1, 0, 1);
 
             objects.push_back(&env);
 

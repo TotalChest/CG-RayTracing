@@ -3,7 +3,7 @@
 
 Model::Model(const char *filename) : verts(), faces() {
     exist = true;
-    material = Material(Color(170, 160, 210), 200, 0.5, 0.2, 0, 1);
+    material = Material();
     std::ifstream in;
     in.open (filename, std::ifstream::in);
     if (in.fail()) {
