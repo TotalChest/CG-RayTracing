@@ -233,14 +233,14 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 
 	switch(sceneId)
 	{
-		case 0:
+		case 1:
 		{
-            std::cout << "Scene 0" << std::endl;
+            std::cout << "Scene 1" << std::endl;
 
             Back_ground = Color(15, 0, 35);
 
             int n = -1;
-            unsigned char *data = stbi_load("textures/space.jpg", &envmap_width, &envmap_height, &n, 0);
+            unsigned char *data = stbi_load((TEXTURES_DIR + "space.jpg").c_str(), &envmap_width, &envmap_height, &n, 0);
             if (!data || 3!=n) {
                 std::cerr << "Error: can not load the environment map" << std::endl;
                 return -1;
@@ -283,9 +283,9 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 
 		    return true;
 		}
-		case 1:
+		case 2:
 		{
-            std::cout << "Scene 1" << std::endl;
+            std::cout << "Scene 2" << std::endl;
 
             Back_ground = Color(200, 197, 230);
 
@@ -304,7 +304,7 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             Plane plane5(Vector(0, 1, 0), Point(0, -7, 0), dark_pastel);
             Plane plane6(Vector(0, 0, 1), Point(0, 0, -11), pastel);
 
-            model = Model("models/lamp.obj");
+            model = Model("lamp.obj");
             model.material = lamp;
 
 		    objects.push_back(&sphere1);
@@ -326,14 +326,14 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 
 			return true;
 		}
-		case 2:
+		case 3:
 		{
-            std::cout << "Scene 2" << std::endl;
+            std::cout << "Scene 3" << std::endl;
 
             Back_ground = Color(200, 200, 200);
 
             int n = -1;
-            unsigned char *data = stbi_load("textures/space.jpg", &envmap_width, &envmap_height, &n, 0);
+            unsigned char *data = stbi_load((TEXTURES_DIR + "space.jpg").c_str(), &envmap_width, &envmap_height, &n, 0);
             if (!data || 3!=n)
             {
                 std::cerr << "Error: can not load the environment map" << std::endl;
@@ -346,7 +346,7 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             stbi_image_free(data);
             Sphere env(Point(0, 0, 0), 100, Material());
 
-            model = Model("models/rocket.obj");
+            model = Model("rocket.obj");
             model.material = Material(Color(170, 160, 210), 200, 0.6, 0.1, 0, 1);
 
             objects.push_back(&env);
@@ -362,9 +362,9 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 
 			return true;
 		}
-		case 3:
+		case 4:
 		{
-			std::cout << "Scene 3" << std::endl;
+			std::cout << "Scene 4" << std::endl;
 
 			return true;
 		}

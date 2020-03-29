@@ -5,7 +5,7 @@ Model::Model(const char *filename) : verts(), faces() {
     exist = true;
     material = Material();
     std::ifstream in;
-    in.open (filename, std::ifstream::in);
+    in.open ((MODELS_DIR + filename).c_str(), std::ifstream::in);
     if (in.fail()) {
         std::cerr << "Failed to open model file: " << filename << std::endl;
         exit(1);

@@ -9,6 +9,8 @@
 #include <string>
 #include "geometry.h"
 
+extern std::string MODELS_DIR;
+
 class Model {
 private:
     std::vector<Point> verts;

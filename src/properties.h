@@ -10,8 +10,11 @@
 #include <omp.h>
 #include "geometry.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "lib/stb_image.hpp"
+#include "../lib/stb_image.hpp"
 
+
+std::string MODELS_DIR("../models/");
+std::string TEXTURES_DIR("../textures/");
 
 int sceneId = 1;
 int threads = 8;

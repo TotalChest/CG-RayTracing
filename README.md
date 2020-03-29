@@ -3,24 +3,32 @@ CMC course "Сomputer graphics"
 
 ### Build:
 ```bash
-$ cmake CMakeLists.txt
-$ make
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_BUILD_TYPE=Release ..
+$ make -j 4
 ```
-
 ### Run:
 ```bash
-$ ./rt -out <output_file.bmp> -scene <sceneID> -threads <threads_num>
+$ ./rt -out <output_path> -scene <scene_number> -threads <threads>
 ```
 ### Features:
-- Phong model
-- Shadows
-- Specular
-- Reflective
-- Refractive
-- Threads
-- Enviroment map
-- 3D models
+- Base
+	- Phong model
+	- Shadows
+	- Specular
+	- Reflective
+	- Shheres and triangles
+	- Light sources
+	- 1600*900 pixels
+- Additions
+	- Plane (+1)
+	- Refractive (+1)
+	- Threads(+2)
+	- Enviroment map (+1)
+	- 3D models (+4)
 ### Examples: 
-![Example](/Scene_0.bmp)
-![Example](/Scene_1.bmp)
-![Example](/Scene_2.bmp)
+![Example](examples/Scene_1.bmp)
+![Example](examples/Scene_2.bmp)
+![Example](examples/Scene_3.bmp)
+![Example](examples/Scene_4.bmp)

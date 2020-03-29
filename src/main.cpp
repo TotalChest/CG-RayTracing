@@ -46,7 +46,6 @@ int main(int argc, const char** argv)
         outFilePath = std::string("Scene_") + std::to_string(sceneId) + ".bmp";
 
     
-
     if(cmdLineParams.find("-threads") != cmdLineParams.end())
         threads = atoi(cmdLineParams["-threads"].c_str());
 
