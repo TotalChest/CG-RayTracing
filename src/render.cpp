@@ -345,7 +345,12 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             model = Model("rocket.obj");
             model.material = Material(Color(255, 255, 255), 10, 0.5, 0, 0, 1);
 
+            Material window(Color(10,60,70), 500, 1, 0.3, 0, 1);
+
+            Sphere sphere1(Point(4, 6.8, -2.6), 1.7, window);
+
             objects.push_back(&env);
+            objects.push_back(&sphere1);
 
             lights.push_back(Light(1, 0.5, Point(10,10,-35)));
             lights.push_back(Light(1, 0.3, Point(-5,-30,-10)));
