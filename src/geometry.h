@@ -81,6 +81,7 @@ struct Object
 	Material material;
 	Object();
 	Object(const Material &mat);
+    virtual Material get_material(Point &P) = 0;
 	virtual Vector get_normal(Point &P) = 0;
 	virtual std::pair<float, float> IntersectRay(Point &O, Vector &D) = 0;
 };
@@ -93,6 +94,7 @@ struct Sphere : Object
 
     Sphere();
     Sphere(const Point &c, const float &r, const Material &mat);
+    Material get_material(Point &P);
     Vector get_normal(Point &P);
     std::pair<float, float> IntersectRay(Point &O, Vector &D);
 };
@@ -102,9 +104,11 @@ struct Plane : Object
 {
     Vector normal;
     Point point;
+    Material material_2;
 
     Plane();
-    Plane(const Vector &n, const Point &p, const Material &mat);
+    Plane(const Vector &n, const Point &p, const Material &mat, const Material &mat_2);
+    Material get_material(Point &P);
     Vector get_normal(Point &P);
     std::pair<float, float> IntersectRay(Point &O, Vector &D);
 };
@@ -118,6 +122,7 @@ struct Triangle : Object
 
     Triangle();
     Triangle(const Point v0, const Point v1, const Point v2, const Material &mat);
+    Material get_material(Point &P);
     Vector get_normal(Point &P);
     std::pair<float, float> IntersectRay(Point &O, Vector &D);
 };

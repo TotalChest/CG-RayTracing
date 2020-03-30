@@ -23,6 +23,7 @@ $ ./rt -out <output_path> -scene <scene_number> -threads <threads>
 	- 1600*900 pixels
 - Additions
 	- Plane (+1)
+	- Textures (+1)
 	- Refractive (+1)
 	- Threads(+2)
 	- Enviroment map (+1)
@@ -31,4 +32,3 @@ $ ./rt -out <output_path> -scene <scene_number> -threads <threads>
 ![Example](examples/Scene_1.bmp)
 ![Example](examples/Scene_2.bmp)
 ![Example](examples/Scene_3.bmp)
-![Example](examples/Scene_4.bmp)
