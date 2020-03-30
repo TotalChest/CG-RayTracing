@@ -13,7 +13,7 @@ Vector ReflectRay(Vector &V, Vector &N) {
 
 
 bool RefractRay(Vector &V, Vector &N, float &refractive, Vector &S) {
-    float cos = (-1.0)*(V * N)/(V.norm() * N.norm());
+    float cos = -std::max(-1.f, std::min(1.f,(V * N)/(V.norm() * N.norm())));
     float n1 = 1, n2 = refractive;
     Vector n = N;
     if (cos < 0) {
@@ -22,8 +22,8 @@ bool RefractRay(Vector &V, Vector &N, float &refractive, Vector &S) {
         n = N * (-1);
     }
     float A = n1 / n2;
-    float k = 1.0 - A*A*(1.0 - cos*cos);
-    if(k <= 0)
+    float k = 1.15 - A*A*(1.0 - cos*cos);
+    if(k < 0)
         return false;
     S = V*A + n*(A*cos - sqrt(k));
     return true;
@@ -56,7 +56,7 @@ bool ClosestIntersection(Point &O, Vector &D, float t_min, float t_max, Point &P
     {
         P = D.to_point(closest_t) + O;
         N = object->get_normal(P);
-        mat = object->material;
+        mat = object->get_material(P);
     }
 
     if(model.exist)
@@ -80,20 +80,6 @@ bool ClosestIntersection(Point &O, Vector &D, float t_min, float t_max, Point &P
         }
     }
 
-/*
-
-    if (fabs(D.y) > EPSILON)
-    {
-        float plane_dist = (-1.0)*(O.y + 5) / D.y;
-        Point T = D.to_point(plane_dist) + O;
-        if (plane_dist > 0 && fabs(T.x)<10 && T.z<30 && T.z>10 && plane_dist < closest_t){
-            Intersection = true;
-            P = T;
-            N = Vector(0,1,0);
-            mat = (int(0.5*T.x+10) + int(.5*T.z)) & 1 ? Material(Color(115,130,80), 600, 1, 0.2, 0, 1) : Material(Color(215,130,80), 600, 1, 0.2, 0, 1);
-        }
-    }
-*/
     return Intersection;
 }
 
@@ -219,7 +205,7 @@ void render(std::vector<uint32_t> &image, Camera &camera)
     	{
         	Vector D = camera.point_to_vector(i, j);
         	Color color = TraceRay(camera.O, D, 1, INF, RECURSION_DEPTH);
-        	image[(i+HEIGHT/2)*WIDTH + (j+WIDTH/2)] = color.hex();
+        	image[(i+HEIGHT/2)*WIDTH + (j+WIDTH/2)] = (color).hex();
     	}
 	}
     std::cout << "\rProgress: 100%\n";
@@ -252,7 +238,7 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             stbi_image_free(data);
             Sphere env(Point(0, 0, 0), 100, Material());
 
-            Material glass(Color(200,200,200), 200, 0.8, 0.2, 0.8, 3);
+            Material glass(Color(200,200,200), 200, 0.8, 0.2, 0.8, 4);
             Material red(Color(200,20,0), 2, 0.1, 0.04, 0, 1);
             Material mirror(Color(100,100,100), 800, 2, 0.8, 0, 1);
             Material green(Color(40,150,30), 200, 0.2, 0.3, 0, 1);
@@ -289,24 +275,27 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
 
             Back_ground = Color(200, 197, 230);
 
-            Material red_glass(Color(240,40,10), 600, 0.6, 0.05, 0.75, 1.05);
-            Material green_glass(Color(10,100,20), 600, 0.6, 0.05, 0.75, 1.00);
+            Material red_glass(Color(240,40,10), 600, 0.6, 0.04, 0.75, 4);
+            Material green_glass(Color(10,100,20), 600, 0.6, 0.05, 0.6, 1.5);
             Material dark_mirror(Color(10,60,70), 700, 0.8, 0.5, 0, 1);
             Material pastel(Color(170, 125, 80), 0.4, 0.02, 0, 0, 1);
             Material dark_pastel(Color(145, 90, 40), 0.5, 0.05, 0, 0, 1);
             Material lamp(Color(255, 255, 255), 10, 1, 0, 0, 1);
 
-            Sphere sphere1(Point(6, -2, 15), 5, red_glass);
+            Sphere sphere1(Point(6, -2, 12), 5, red_glass);
             Sphere sphere2(Point(-8, -4, 17), 3, dark_mirror);
-            Plane plane1(Vector(0, 0, -1), Point(0, 0, 20), pastel);
-            Plane plane2(Vector(-1, 0, 0), Point(11, 0, 0), pastel);
-            Plane plane3(Vector(0, -1, 0), Point(0, 7, 0), dark_pastel);
-            Plane plane4(Vector(1, 0, 0), Point(-11, 0, 0), pastel);
-            Plane plane5(Vector(0, 1, 0), Point(0, -7, 0), dark_pastel);
-            Plane plane6(Vector(0, 0, 1), Point(0, 0, -11), pastel);
-            Triangle triangle1(Point(-5, -7, 8), Point(-2, -3, 12), Point(2, -7, 9), green_glass);
-            Triangle triangle2(Point(-5, -7, 8), Point(-2, -3, 12), Point(-3, -7, 14), green_glass);
-            Triangle triangle3(Point(-3, -7, 14), Point(-2, -3, 12), Point(2, -7, 9), green_glass);
+            Plane plane1(Vector(0, 0, -1), Point(0, 0, 20), pastel, pastel);
+            Plane plane2(Vector(-1, 0, 0), Point(11, 0, 0), pastel, pastel);
+            Plane plane3(Vector(0, -1, 0), Point(0, 7, 0), dark_pastel, pastel);
+            Plane plane4(Vector(1, 0, 0), Point(-11, 0, 0), pastel, pastel);
+            Plane plane5(Vector(0, 1, 0), Point(0, -7, 0), dark_pastel, pastel);
+            Plane plane6(Vector(0, 0, 1), Point(0, 0, -11), pastel, pastel);
+            Triangle triangle1(Point(-2, -7, 8), Point(-3, -1, 12), Point(0, -7, 13), green_glass);
+            Triangle triangle2(Point(-2, -7, 8), Point(-3, -1, 12), Point(-6, -7, 10), green_glass);
+            Triangle triangle3(Point(-6, -7, 10), Point(-3, -1, 12), Point(0, -7, 13), green_glass);
+            Triangle triangle4(Point(-3, -1, 12), Point(-2, -7, 8), Point(0, -7, 13), green_glass);
+            Triangle triangle5(Point(-3, -1, 12), Point(-2, -7, 8), Point(-6, -7, 10), green_glass);
+            Triangle triangle6(Point(-3, -1, 12), Point(-6, -7, 10), Point(0, -7, 13), green_glass);
 
 		    objects.push_back(&sphere1);
             objects.push_back(&sphere2);
@@ -319,6 +308,9 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             objects.push_back(&triangle1);
             objects.push_back(&triangle2);
             objects.push_back(&triangle3);
+            objects.push_back(&triangle4);
+            objects.push_back(&triangle5);
+            objects.push_back(&triangle6);
 
 		    lights.push_back(Light(1, 0.4, Point(0,2,15)));
             lights.push_back(Light(1, 0.4, Point(0,2,-5)));
@@ -363,12 +355,6 @@ bool build_image(std::vector<uint32_t> &image, int sceneId)
             Camera camera(Point(0,0,-40), Vector(0,0,1), 90);
 
             render(image, camera);
-
-			return true;
-		}
-		case 4:
-		{
-			std::cout << "Scene 4" << std::endl;
 
 			return true;
 		}

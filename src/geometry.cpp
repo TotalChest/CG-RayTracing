@@ -78,6 +78,10 @@ Object::Object(const Material &mat): material(mat) {}
 
 Sphere::Sphere(): center(Point(0,0,0)), radius(0), Object() {}
 Sphere::Sphere(const Point &c, const float &r, const Material &mat): center(c), radius(r), Object(mat) {}
+Material Sphere::get_material(Point &P)
+{
+    return material;
+}
 Vector Sphere::get_normal(Point &P)
 {
     Vector N = P - center;
@@ -105,8 +109,12 @@ std::pair<float, float> Sphere::IntersectRay(Point &O, Vector &D)
 
 
 Plane::Plane(): normal(Vector(0,0,0)), point(Point(0, 0, 0)), Object() {}
-Plane::Plane(const Vector &n, const Point &p, const Material &mat): normal(n), point(p), Object(mat) {}
+Plane::Plane(const Vector &n, const Point &p, const Material &mat, const Material &mat_2): normal(n), point(p), Object(mat), material_2(mat_2) {}
 Vector Plane::get_normal(Point &P) { return normal;}
+Material Plane::get_material(Point &P)
+{
+    return (int(0.4*P.x+100) + int(.4*P.z)) & 1 ? material: material_2;
+}
 std::pair<float, float> Plane::IntersectRay(Point &O, Vector &D)
 {
     if (fabs(D * normal / normal.norm()) > 1e-5)
@@ -122,6 +130,10 @@ std::pair<float, float> Plane::IntersectRay(Point &O, Vector &D)
 
 Triangle::Triangle(): v0(Point(0,0,0)), v1(Point(0,0,0)), v2(Point(0,0,0)),Object() {}
 Triangle::Triangle(const Point v0, const Point v1, const Point v2, const Material &mat): v0(v0), v1(v1), v2(v2), Object(mat) {}
+Material Triangle::get_material(Point &P)
+{
+    return material;
+}
 Vector Triangle::get_normal(Point &P) { return cross(v1-v0, v2-v0);}
 std::pair<float, float> Triangle::IntersectRay(Point &O, Vector &D)
 {
