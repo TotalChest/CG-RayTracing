@@ -18,7 +18,7 @@ $ ./rt -out <output_path> -scene <scene_number> -threads <threads>
 	- Shadows
 	- Specular
 	- Reflective
-	- Shheres and triangles
+	- Spheres and triangles
 	- Light sources
 	- 1600*900 pixels
 - Additions
