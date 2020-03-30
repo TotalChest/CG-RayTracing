@@ -35,9 +35,6 @@ Model::Model(const char *filename) : verts(), faces() {
             faces.push_back(f);
         }
     }
-
-    Point min, max;
-    get_bbox(min, max);
 }
 
 
